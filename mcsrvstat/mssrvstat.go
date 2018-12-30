@@ -2,6 +2,7 @@ package mcsrvstat
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 )
@@ -49,12 +50,15 @@ func Query(address string) (ServerStatus, error) {
 	if err != nil {
 		return ServerStatus{}, err
 	}
+	// Server not found
+	if response.StatusCode != 200 {
+		return ServerStatus{}, fmt.Errorf("server responed with code other then 200")
+	}
 
 	data, err := ioutil.ReadAll(response.Body)
 	if err != nil {
 		return ServerStatus{}, err
 	}
-
 	status := ServerStatus{}
 	err = json.Unmarshal(data, &status)
 	if err != nil {
