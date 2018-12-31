@@ -2,6 +2,7 @@ package mcsrvstat
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -65,5 +66,8 @@ func Query(address string) (ServerStatus, error) {
 		return ServerStatus{}, err
 	}
 
+	if status.Debug.Ping == false {
+		return ServerStatus{}, errors.New("server is offline")
+	}
 	return status, nil
 }

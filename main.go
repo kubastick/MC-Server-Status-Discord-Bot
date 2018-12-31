@@ -44,12 +44,10 @@ func messageRouter(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if s.State.User.ID == m.Author.ID {
 		return
 	}
-
 	userMessage := m.Content
 	// Check if message is command
 	if strings.HasPrefix(userMessage, "!status ") {
 		log.Printf("Parsing mesage: %s\n", userMessage)
-
 		_, err := s.ChannelMessageSend(m.ChannelID, "Ok, I'm going to check this minecraft server IP!")
 		if err != nil {
 			log.Fatalf("Failed to send message %s\n", err.Error())
