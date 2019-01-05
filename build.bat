@@ -1,9 +1,9 @@
 @echo off
+mkdir out
 echo Compiling for Linux ARMv7
 set GOOS=linux
 set GOARCH=arm
 set GOARM=7
-mkdir out
 go build -o out/linux-armv7 -ldflags="-s -w" .
 echo Compiling for Windows x64
 set GOOS=windows
