@@ -1,2 +1,4 @@
 /.idea
 config.toml
+/out
+settings.json
