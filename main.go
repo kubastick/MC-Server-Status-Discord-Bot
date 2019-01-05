@@ -4,6 +4,7 @@ import (
 	"MinecraftServerStatusBot/mcsrvstat"
 	"fmt"
 	"github.com/bwmarrin/discordgo"
+	"io"
 	"log"
 	"os"
 	"os/signal"
@@ -56,7 +57,7 @@ func messageRouter(s *discordgo.Session, m *discordgo.MessageCreate) {
 		serverIP := strings.Replace(userMessage, "!status ", "", -1)
 		log.Printf("Checking %s\n", serverIP)
 
-		result, err := checkMinecraftServer(serverIP)
+		imageResult, result, err := checkMinecraftServer(serverIP)
 		if err != nil {
 			responseMessage := fmt.Sprintf("Sorry, but I can't find minecraft server with these ip :c")
 			log.Printf("Failed to server check IP: %s", err.Error())
@@ -72,6 +73,18 @@ func messageRouter(s *discordgo.Session, m *discordgo.MessageCreate) {
 			log.Fatalf("Failed to send message %s\n", err.Error())
 		}
 
+		// Try sending image first
+		if imageResult != nil {
+			_, err := s.ChannelFileSend(m.ChannelID, "result.png", imageResult)
+			if err != nil {
+				log.Println("Failed to send image, using text as fallback")
+			} else {
+				// Successfully send image, so do not send text
+				return
+			}
+		}
+
+		// Otherwise send text message
 		_, err = s.ChannelMessageSend(m.ChannelID, result)
 		if err != nil {
 			log.Fatalf("Failed to send message %s\n", err.Error())
@@ -81,12 +94,19 @@ func messageRouter(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 }
 
-func checkMinecraftServer(address string) (string, error) {
+func checkMinecraftServer(address string) (image io.Reader, statusText string, err error) {
 	status, err := mcsrvstat.Query(address)
 	if err != nil {
-		return "", err
+		return nil, "", err
 	}
 
+	// Try generate image first, otherwise return text status
+	img, err := status.GenerateStatusImage()
+	if err == nil {
+		return &img, "", err
+	}
+
+	//
 	result := fmt.Sprintf("Players online:  %d \\ %d\n", status.Players.Online, status.Players.Max)
 	if len(status.Motd.Clean) > 0 {
 		result += fmt.Sprintf("MOTD: %s\n", status.Motd.Clean[0])
@@ -99,5 +119,5 @@ func checkMinecraftServer(address string) (string, error) {
 			result += p + "\n"
 		}
 	}
-	return result, nil
+	return nil, result, nil
 }

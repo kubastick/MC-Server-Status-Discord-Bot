@@ -1,11 +1,20 @@
 package mcsrvstat
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/fogleman/gg"
+	"image"
+	"image/png"
 	"io/ioutil"
 	"net/http"
+	"strings"
+)
+
+var (
+	backgroundGraphic image.Image
 )
 
 type ServerStatus struct {
@@ -46,6 +55,15 @@ type ServerStatus struct {
 	Hostname string `json:"hostname"`
 }
 
+// Load fonts and graphics
+func init() {
+	var err error
+	backgroundGraphic, err = gg.LoadImage("./resources/background.jpg")
+	if err != nil {
+		panic("status.jpg not found")
+	}
+}
+
 func Query(address string) (ServerStatus, error) {
 	response, err := http.Get("https://api.mcsrvstat.us/1/" + address)
 	if err != nil {
@@ -70,4 +88,39 @@ func Query(address string) (ServerStatus, error) {
 		return ServerStatus{}, errors.New("server is offline")
 	}
 	return status, nil
+}
+
+func (s ServerStatus) GenerateStatusImage() (imageBuf bytes.Buffer, err error) {
+	fontLocation := "./resources/mcfont.ttf"
+	about := "Generated using Minecraft Server Status Bot [Discord]"
+
+	if err != nil {
+		return bytes.Buffer{}, err
+	}
+
+	// Prepare strings
+	trimmedMotd := strings.TrimSpace(s.Motd.Clean[0])
+	players := fmt.Sprintf("%d players online of %d max", s.Players.Online, s.Players.Max)
+	version := "Version: " + strings.TrimSpace(s.Version)
+	// Create new image
+	img := gg.NewContextForImage(backgroundGraphic)
+	// Draw MOTD
+	img.LoadFontFace(fontLocation, 50)
+	img.SetRGB(1, 1, 1)
+	img.DrawString(trimmedMotd, 50, 75)
+	// Draw number of players online
+	img.LoadFontFace(fontLocation, 35)
+	img.SetRGB(0, 1, 0)
+	img.DrawString(players, 50, 265)
+	// Draw version
+	img.SetRGB(1, 1, 0)
+	img.DrawString(version, 50, 335)
+	// Draw about
+	img.LoadFontFace(fontLocation, 10)
+	img.SetRGB(1, 1, 1)
+	img.DrawString(about, 1120-350, 700-30)
+	// Encode image into png
+	buf := bytes.Buffer{}
+	png.Encode(&buf, img.Image())
+	return buf, nil
 }
