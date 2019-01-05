@@ -122,6 +122,5 @@ func (s ServerStatus) GenerateStatusImage() (imageBuf bytes.Buffer, err error) {
 	// Encode image into png
 	buf := bytes.Buffer{}
 	png.Encode(&buf, img.Image())
-	img.SavePNG("./resources/sample.png")
 	return buf, nil
 }
