@@ -53,6 +53,8 @@ type ServerStatus struct {
 	Version  string `json:"version"`
 	Protocol int    `json:"protocol"`
 	Hostname string `json:"hostname"`
+
+	userIP string
 }
 
 // Load fonts and graphics
@@ -87,6 +89,7 @@ func Query(address string) (ServerStatus, error) {
 	if status.Debug.Ping == false {
 		return ServerStatus{}, errors.New("server is offline")
 	}
+	status.userIP = address
 	return status, nil
 }
 
@@ -108,6 +111,10 @@ func (s ServerStatus) GenerateStatusImage() (imageBuf bytes.Buffer, err error) {
 	img.LoadFontFace(fontLocation, 50)
 	img.SetRGB(1, 1, 1)
 	img.DrawString(trimmedMotd, 50, 75)
+	// Draw IP below MOTD
+	img.LoadFontFace(fontLocation, 20)
+	img.SetRGB(1, 1, 1)
+	img.DrawString(s.userIP, 50, 140)
 	// Draw number of players online
 	img.LoadFontFace(fontLocation, 35)
 	img.SetRGB(0, 1, 0)
@@ -119,8 +126,22 @@ func (s ServerStatus) GenerateStatusImage() (imageBuf bytes.Buffer, err error) {
 	img.LoadFontFace(fontLocation, 10)
 	img.SetRGB(1, 1, 1)
 	img.DrawString(about, 1120-350, 700-30)
+	// Draw players name's
+	if len(s.Players.List) > 1 && len(s.Players.List) < 11 {
+		// Load font
+		img.LoadFontFace(fontLocation, 15)
+		// Set color
+		img.SetRGB(1, 1, 1)
+		// Add annotation
+		img.DrawString("Player list:", 50, 400)
+		// And goooo!
+		for i, player := range s.Players.List {
+			img.DrawString(player, 50, 425.0+float64(i)*25.0)
+		}
+	}
 	// Encode image into png
 	buf := bytes.Buffer{}
 	png.Encode(&buf, img.Image())
+	// Draw players name's
 	return buf, nil
 }
