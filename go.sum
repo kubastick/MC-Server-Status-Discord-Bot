@@ -2,12 +2,16 @@ github.com/BurntSushi/toml v0.3.1 h1:WXkYYl6Yr3qBf1K79EBnL4mak0OimBfB0XUf9Vl28OQ
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/SpencerSharkey/gomc v0.0.0-20171215012004-e16df85c4e5f h1:dNxrBxG9FbASjw1765L0BeZWJDp4Hcic8OY8e0VQI4s=
 github.com/SpencerSharkey/gomc v0.0.0-20171215012004-e16df85c4e5f/go.mod h1:58QQEsSHOjPSpUB/LMKNb0t8eUZTmGJa+jmvO/HA8HQ=
+github.com/TurtleGamingFTW/dblgo-archive v0.0.0-20180809235347-8287fb579843 h1:YF8cpOS9INMMefo3PRmEd+mgCIF8HQGvjDVdPzq4m4I=
+github.com/TurtleGamingFTW/dblgo-archive v0.0.0-20180809235347-8287fb579843/go.mod h1:j02y2oYOWjrd6mDQlDZoxnShjDBDTPcc+wSr4VV62e8=
 github.com/bwmarrin/discordgo v0.19.0 h1:kMED/DB0NR1QhRcalb85w0Cu3Ep2OrGAqZH1R5awQiY=
 github.com/bwmarrin/discordgo v0.19.0/go.mod h1:O9S4p+ofTFwB02em7jkpkV8M3R0/PUVOwN61zSZ0r4Q=
 github.com/fogleman/gg v1.1.0 h1:wVTfU9tB/LDr2eI5HILatkzBQLD3yl0KtPFt8KlcSIY=
 github.com/fogleman/gg v1.1.0/go.mod h1:R/bRT+9gY/C5z7JzPU0zXsXHKM4/ayA+zqcVNZzPa1k=
 github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 h1:DACJavvAHhabrF08vX0COfcOBJRhZ8lUbR+ZWIs0Y5g=
 github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0/go.mod h1:E/TSTwGwJL78qG/PmXZO1EjYhfJinVAhrmmHX6Z8B9k=
+github.com/google/go-querystring v1.0.0 h1:Xkwi/a1rcvNg1PPYe5vI8GbeBY/jrVuDX5ASuANWTrk=
+github.com/google/go-querystring v1.0.0/go.mod h1:odCYkC5MyYFN7vkCjXpyrEuKhc/BUO6wN/zVPAxq5ck=
 github.com/gorilla/websocket v1.4.0 h1:WDFjx/TMzVgy9VdMMQi2K2Emtwi2QcUQsztZ/zLaH/Q=
 github.com/gorilla/websocket v1.4.0/go.mod h1:E7qHFY5m1UJ88s3WnNqhKjPHQ0heANvMoAMk2YaljkQ=
 golang.org/x/crypto v0.0.0-20181030102418-4d3f4d9ffa16 h1:y6ce7gCWtnH+m3dCjzQ1PCuwl28DDIc3VNnvY29DlIA=

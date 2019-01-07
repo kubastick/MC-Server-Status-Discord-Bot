@@ -17,6 +17,7 @@ func main() {
 
 	session := connectToDiscord(config.DiscordSecret)
 	session.AddHandler(messageRouter)
+	postServerCountToDiscordBotApi(session)
 	defer session.Close()
 
 	log.Println("Minecraft status bot is ready!")
@@ -46,6 +47,7 @@ func messageRouter(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 	userMessage := m.Content
+
 	// Check if message is command
 	if strings.HasPrefix(userMessage, "!status ") {
 		log.Printf("Parsing mesage: %s\n", userMessage)
@@ -91,6 +93,10 @@ func messageRouter(s *discordgo.Session, m *discordgo.MessageCreate) {
 		}
 
 		log.Printf("Everything went ok (%s)", serverIP)
+	}
+
+	if strings.HasPrefix(userMessage, "!ping") {
+		handlePing(s, m)
 	}
 }
 
