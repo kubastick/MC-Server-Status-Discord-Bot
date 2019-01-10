@@ -1,6 +1,8 @@
 # Minecraft Server Status Discord Bot
-Simple bot to quickly check minecraft server status [Discord Invite Link](https://discordapp.com/api/oauth2/authorize?client_id=527866094925512714&permissions=2048&scope=bot)  
-Usage: `!status <Minecraft server IP>`
+Simple bot to quickly check Minecraft server status [Discord Invite Link](https://discordapp.com/api/oauth2/authorize?client_id=527866094925512714&permissions=2048&scope=bot)  
+For usage use: `!help`
+
+![](https://raw.githubusercontent.com/kubastick/MC-Server-Status-Discord-Bot/master/resources/sample.png)
 
 ### Configuration
 With file `config.toml`   
