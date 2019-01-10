@@ -1,8 +1,10 @@
 package main
 
 import (
+	"MinecraftServerStatusBot/mcsrvstat"
 	"fmt"
 	"github.com/bwmarrin/discordgo"
+	"io"
 	"log"
 	"strings"
 )
@@ -65,4 +67,32 @@ func handleStatus(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 
 	log.Printf("Everything went ok (%s)\n", serverIP)
+}
+
+func checkMinecraftServer(address string) (image io.Reader, statusText string, err error) {
+	status, err := mcsrvstat.Query(address)
+	if err != nil {
+		return nil, "", err
+	}
+
+	// Try generate image
+	img, err := status.GenerateStatusImage()
+	if err != nil {
+		log.Println("Failed to generate image: " + err.Error())
+	}
+
+	// And generate text
+	result := fmt.Sprintf("Players online:  %d \\ %d\n", status.Players.Online, status.Players.Max)
+	if len(status.Motd.Clean) > 0 {
+		result += fmt.Sprintf("MOTD: %s\n", status.Motd.Clean[0])
+	}
+	result += fmt.Sprintf("Version: %s\n", status.Version)
+	playerCount := len(status.Players.List)
+	if playerCount > 0 && playerCount < 10 {
+		result += "Player list:\n"
+		for _, p := range status.Players.List {
+			result += p + "\n"
+		}
+	}
+	return &img, result, nil
 }
