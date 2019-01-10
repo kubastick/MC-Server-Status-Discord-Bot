@@ -25,6 +25,7 @@ func main() {
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
 	<-sc
+	log.Println("Received SIGKILL, exiting")
 }
 
 func connectToDiscord(secret string) *discordgo.Session {
@@ -46,57 +47,20 @@ func messageRouter(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if s.State.User.ID == m.Author.ID {
 		return
 	}
+	// Get content of message
 	userMessage := m.Content
 
-	// Check if message is command
+	// Commands routing
 	if strings.HasPrefix(userMessage, "!status ") {
-		log.Printf("Parsing mesage: %s\n", userMessage)
-		_, err := s.ChannelMessageSend(m.ChannelID, "Ok, I'm going to check this minecraft server IP!")
-		if err != nil {
-			log.Fatalf("Failed to send message %s\n", err.Error())
-		}
-
-		serverIP := strings.Replace(userMessage, "!status ", "", -1)
-		log.Printf("Checking %s\n", serverIP)
-
-		imageResult, result, err := checkMinecraftServer(serverIP)
-		if err != nil {
-			responseMessage := fmt.Sprintf("Sorry, but I can't find minecraft server with these ip :c")
-			log.Printf("Failed to server check IP: %s", err.Error())
-			_, err = s.ChannelMessageSend(m.ChannelID, responseMessage)
-			if err != nil {
-				log.Fatalf("Failed to send message %s\n", err.Error())
-			}
-			return
-		}
-
-		_, err = s.ChannelMessageSend(m.ChannelID, "Here we go!")
-		if err != nil {
-			log.Fatalf("Failed to send message %s\n", err.Error())
-		}
-
-		// Try sending image first
-		if imageResult != nil {
-			_, err := s.ChannelFileSend(m.ChannelID, "result.png", imageResult)
-			if err != nil {
-				log.Println("Failed to send image, using text as fallback")
-			} else {
-				// Successfully send image, so do not send text
-				return
-			}
-		}
-
-		// Otherwise send text message
-		_, err = s.ChannelMessageSend(m.ChannelID, result)
-		if err != nil {
-			log.Fatalf("Failed to send message %s\n", err.Error())
-		}
-
-		log.Printf("Everything went ok (%s)", serverIP)
+		handleStatus(s, m)
 	}
 
 	if strings.HasPrefix(userMessage, "!ping") {
 		handlePing(s, m)
+	}
+
+	if strings.HasPrefix(userMessage, "!help") {
+		handleHelp(s, m)
 	}
 }
 
@@ -106,13 +70,13 @@ func checkMinecraftServer(address string) (image io.Reader, statusText string, e
 		return nil, "", err
 	}
 
-	// Try generate image first, otherwise return text status
+	// Try generate image
 	img, err := status.GenerateStatusImage()
-	if err == nil {
-		return &img, "", err
+	if err != nil {
+		log.Println("Failed to generate image: " + err.Error())
 	}
 
-	//
+	// And generate text
 	result := fmt.Sprintf("Players online:  %d \\ %d\n", status.Players.Online, status.Players.Max)
 	if len(status.Motd.Clean) > 0 {
 		result += fmt.Sprintf("MOTD: %s\n", status.Motd.Clean[0])
@@ -125,5 +89,5 @@ func checkMinecraftServer(address string) (image io.Reader, statusText string, e
 			result += p + "\n"
 		}
 	}
-	return nil, result, nil
+	return &img, result, nil
 }
