@@ -16,7 +16,7 @@ func handleStatus(s *discordgo.Session, m *discordgo.MessageCreate) {
 	log.Printf("User \"%s\" asked for server status using \"%s\" command", m.Author.Username, userMessage)
 	_, err := s.ChannelMessageSend(m.ChannelID, "Ok, I'm going to check this minecraft server IP!")
 	if err != nil {
-		log.Fatalf("Failed to send message %s\n", err.Error())
+		log.Printf("Failed to send message %s\n", err.Error())
 	}
 
 	// Get server IP
@@ -41,7 +41,7 @@ func handleStatus(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	_, err = s.ChannelMessageSend(m.ChannelID, "Here we go!")
 	if err != nil {
-		log.Fatalf("Failed to send message %s\n", err.Error())
+		log.Printf("Failed to send message %s\n", err.Error())
 	}
 
 	// If user not decided otherwise, try sending image first
