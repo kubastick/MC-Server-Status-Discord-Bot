@@ -127,7 +127,7 @@ func (s ServerStatus) GenerateStatusImage() (imageBuf bytes.Buffer, err error) {
 	img.SetRGB(1, 1, 1)
 	img.DrawString(about, 1120-350, 700-30)
 	// Draw players name's
-	if len(s.Players.List) > 1 && len(s.Players.List) < 11 {
+	if len(s.Players.List) >= 1 && len(s.Players.List) < 11 {
 		// Load font
 		img.LoadFontFace(fontLocation, 15)
 		// Set color
