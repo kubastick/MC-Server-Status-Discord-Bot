@@ -2,3 +2,6 @@
 config.toml
 /out
 settings.json
+
+# Executable
+MinecraftServerStatusBot
