@@ -40,10 +40,11 @@ func connectToDiscord(secret string) *discordgo.Session {
 }
 
 func messageRouter(s *discordgo.Session, m *discordgo.MessageCreate) {
-	// Do not parse own messages
-	if s.State.User.ID == m.Author.ID {
+	// Do not parse own and bot messages
+	if s.State.User.ID == m.Author.ID || m.Author.Bot {
 		return
 	}
+
 	// Get content of message
 	userMessage := m.Content
 
