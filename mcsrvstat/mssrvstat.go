@@ -62,7 +62,7 @@ func init() {
 	var err error
 	backgroundGraphic, err = gg.LoadImage("./resources/background.jpg")
 	if err != nil {
-		panic("status.jpg not found")
+		panic("background.jpg not found")
 	}
 }
 
