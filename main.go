@@ -9,12 +9,16 @@ import (
 	"syscall"
 )
 
+var (
+	config = loadConfig()
+)
+
 func main() {
-	config := loadConfig()
+	configureLogger()
 
 	session := connectToDiscord(config.DiscordSecret)
 	session.AddHandler(messageRouter)
-	postServerCountToDiscordBotApi(session)
+	go postServerCountToDiscordBotApi(session)
 	defer session.Close()
 
 	log.Println("Minecraft status bot is ready!")
@@ -60,4 +64,8 @@ func messageRouter(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if strings.HasPrefix(userMessage, "!help") {
 		handleHelp(s, m)
 	}
+}
+
+func configureLogger() {
+	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
 }

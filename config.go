@@ -7,7 +7,9 @@ import (
 )
 
 type Config struct {
-	DiscordSecret string `toml:"discord_secret"`
+	DiscordSecret      string `toml:"discord_secret"`
+	DiscordStatsSecret string `toml:"discord_stats_secret"`
+	DiscordAppID       string `toml:"discord_app_id"`
 }
 
 func loadConfig() Config {
