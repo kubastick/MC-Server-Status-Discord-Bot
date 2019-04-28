@@ -10,6 +10,7 @@ type Config struct {
 	DiscordSecret      string `toml:"discord_secret"`
 	DiscordStatsSecret string `toml:"discord_stats_secret"`
 	DiscordAppID       string `toml:"discord_app_id"`
+	DisableStatus      bool   `toml:"disable_status"`
 }
 
 func loadConfig() Config {

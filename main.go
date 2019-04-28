@@ -1,12 +1,14 @@
 package main
 
 import (
+	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"log"
 	"os"
 	"os/signal"
 	"strings"
 	"syscall"
+	"time"
 )
 
 var (
@@ -19,6 +21,7 @@ func main() {
 	session := connectToDiscord(config.DiscordSecret)
 	session.AddHandler(messageRouter)
 	go postServerCountToDiscordBotApi(session)
+	go statusLoop(session)
 	defer session.Close()
 
 	log.Println("Minecraft status bot is ready!")
@@ -33,12 +36,10 @@ func connectToDiscord(secret string) *discordgo.Session {
 	discord, err := discordgo.New("Bot " + secret)
 	if err != nil {
 		log.Fatalf("Failed to connect, reasen: %s", err.Error())
-		os.Exit(-1)
 	}
 	err = discord.Open()
 	if err != nil {
 		log.Fatalf("Fatal to establish websocket connection with discord.io, reason: %s", err.Error())
-		os.Exit(-1)
 	}
 	return discord
 }
@@ -68,4 +69,26 @@ func messageRouter(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 func configureLogger() {
 	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
+}
+
+func statusLoop(s *discordgo.Session) {
+	if config.DisableStatus {
+		log.Println("Status has been disabled in config file")
+		return
+	}
+	for {
+		log.Println("Updating status")
+		statusData := discordgo.UpdateStatusData{
+			Status: "online",
+			Game: &discordgo.Game{
+				Type: discordgo.GameTypeWatching,
+				Name: fmt.Sprintf("%d servers", len(s.State.Guilds)),
+			},
+		}
+		err := s.UpdateStatusComplex(statusData)
+		if err != nil {
+			log.Println("Warning, failed to update discord status")
+		}
+		time.Sleep(5 * time.Minute)
+	}
 }
