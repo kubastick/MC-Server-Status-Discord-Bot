@@ -18,6 +18,8 @@ func handleStatus(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if err != nil {
 		log.Printf("Failed to send message %s\n", err.Error())
 	}
+	// Show, that we are working
+	_ = s.ChannelTyping(m.ChannelID)
 
 	// Get server IP
 	serverIP := strings.Replace(userMessage, "!status ", "", -1)
