@@ -26,7 +26,7 @@ func loadConfig() Config {
 
 func createConfig() {
 	fillInCfg := Config{
-		DiscordSecret: "YOUR_DISCORD_BOT_TOKEN",
+		DiscordSecret: "NTg5MDk2OTEwNzY2MzQyMTU3.XQeSUQ.ywUBaZYCMECDjLygSCpDgkYZh4M",
 	}
 	cfgFile, err := os.Create("config.toml")
 	if err != nil {
