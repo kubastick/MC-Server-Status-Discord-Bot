@@ -17,6 +17,7 @@ var (
 	backgroundGraphic image.Image
 )
 
+// ServerStatus is JSON Data returned by mcsrvstat api
 type ServerStatus struct {
 	IP    string `json:"ip"`
 	Port  int    `json:"port"`
@@ -66,6 +67,7 @@ func init() {
 	}
 }
 
+// Query return server status from it's address
 func Query(address string) (ServerStatus, error) {
 	response, err := http.Get("https://api.mcsrvstat.us/1/" + address)
 	if err != nil {
@@ -73,7 +75,7 @@ func Query(address string) (ServerStatus, error) {
 	}
 	// Server not found
 	if response.StatusCode != 200 {
-		return ServerStatus{}, fmt.Errorf("server responed with code other then 200")
+		return ServerStatus{}, fmt.Errorf("server responded with code other then 200")
 	}
 
 	data, err := ioutil.ReadAll(response.Body)
@@ -93,13 +95,10 @@ func Query(address string) (ServerStatus, error) {
 	return status, nil
 }
 
+// GenerateStatusImage generates image from ServerStatus
 func (s ServerStatus) GenerateStatusImage() (imageBuf bytes.Buffer, err error) {
 	fontLocation := "./resources/mcfont.ttf"
 	about := "Generated using Minecraft Server Status Bot [Discord]"
-
-	if err != nil {
-		return bytes.Buffer{}, err
-	}
 
 	// Prepare strings
 	trimmedMotd := strings.TrimSpace(s.Motd.Clean[0])
