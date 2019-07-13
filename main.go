@@ -20,7 +20,7 @@ func main() {
 
 	session := connectToDiscord(config.DiscordSecret)
 	session.AddHandler(messageRouter)
-	go postServerCountToDiscordBotApi(session)
+	go postServerCountToDiscordBotAPI(session)
 	go statusLoop(session)
 	defer session.Close()
 

@@ -6,6 +6,7 @@ import (
 	"os"
 )
 
+// Config of the app
 type Config struct {
 	DiscordSecret      string `toml:"discord_secret"`
 	DiscordStatsSecret string `toml:"discord_stats_secret"`

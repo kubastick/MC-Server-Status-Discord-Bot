@@ -7,10 +7,10 @@ import (
 	"time"
 )
 
-func postServerCountToDiscordBotApi(s *discordgo.Session) {
+func postServerCountToDiscordBotAPI(s *discordgo.Session) {
 	if config.DiscordStatsSecret != "" && config.DiscordAppID != "" {
-		dblApi := dblgo.NewDBLApi(config.DiscordStatsSecret)
-		postStatsLoop(s, dblApi)
+		dblAPI := dblgo.NewDBLApi(config.DiscordStatsSecret)
+		postStatsLoop(s, dblAPI)
 	} else {
 		log.Println("Discord Bot List Api is deactivated")
 	}
